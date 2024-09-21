@@ -613,7 +613,7 @@ void CCharacterPhysicsSupport::in_UpdateCL()
     //}
     else if (ik_controller())
     {
-		CFrustum& view_frust = ::Render->ViewBase;
+		CFrustum& view_frust = GEnv.Render->ViewBase;
 		vis_data& vis = m_EntityAlife.Visual()->getVisData();
 		Fvector p;
 
