@@ -1,4 +1,4 @@
-#ifndef ELEVATOR_STAETE
+﻿#ifndef ELEVATOR_STAETE
 #define ELEVATOR_STAETE
 
 #include "ielevatorstate.h"
@@ -19,7 +19,7 @@ private:
         u32 time;
     };
 
-    static SEnertionState m_etable[CElevatorState::clbNoState][CElevatorState::clbNoState];
+    static SEnertionState m_etable[clbNoState][clbNoState];
 
     IClimableObject* m_ladder;
     CPHCharacter* m_character;
