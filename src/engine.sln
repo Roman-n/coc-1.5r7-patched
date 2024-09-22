@@ -153,7 +153,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrMiscMath", "utils\xrMiscM
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{49438080-78B8-4056-BDCB-4DACAD652C21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pugixml_vs2017_static", "..\Externals\pugixml_vs2017_static.vcxproj", "{07CF01C0-B887-499D-AD9C-799CB6A9FE64}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pugixml", "..\Externals\pugixml.vcxproj", "{07CF01C0-B887-499D-AD9C-799CB6A9FE64}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LuaJIT", "LuaJIT", "{DAEF6FB5-4F98-4B34-B049-8828EFEC9250}"
 EndProject
