@@ -43,71 +43,43 @@ SVS::~SVS()
     //	Now it is release automatically
 #endif
 
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////
 // SPS
 SPS::~SPS()
 {
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
     
     RImplementation.Resources->_DeletePS(this);
 }
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
 ///////////////////////////////////////////////////////////////////////
 // SGS
 SGS::~SGS()
 {
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
-
     RImplementation.Resources->_DeleteGS(this);
 }
 
 #if defined(USE_DX11)
 SHS::~SHS()
 {
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
-
     RImplementation.Resources->_DeleteHS(this);
 }
 
 SDS::~SDS()
 {
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
-
     RImplementation.Resources->_DeleteDS(this);
 }
 
 SCS::~SCS()
 {
-#ifdef USE_OGL
-    CHK_GL(glDeleteProgram(sh));
-#else
     _RELEASE(sh);
-#endif
-
     RImplementation.Resources->_DeleteCS(this);
 }
 #endif
@@ -134,9 +106,7 @@ SInputSignature::~SInputSignature()
 //	SState
 SState::~SState()
 {
-#ifndef USE_OGL
     _RELEASE(state);
-#endif // !USE_OGL
     RImplementation.Resources->_DeleteState(this);
 }
 
@@ -155,10 +125,6 @@ SDeclaration::~SDeclaration()
     }
 #else // USE_DX10
     //	Release vertex layout
-#ifdef USE_OGL
-    glDeleteBuffers(1, &dcl);
-#else
     _RELEASE(dcl);
-#endif // USE_OGL
 #endif // USE_DX10
 }

@@ -4,14 +4,14 @@
 #include "hwcaps.h"
 #include "hw.h"
 
-#if !defined(_EDITOR) && !defined(USE_OGL)
+#if !defined(_EDITOR)
 #include <nvapi.h>
 #include <ags_lib/inc/amd_ags.h>
 #endif
 
 namespace
 {
-#if !defined(_EDITOR) && !defined(USE_OGL)
+#if !defined(_EDITOR)
 u32 GetNVGpuNum()
 {
     NvLogicalGpuHandle logicalGPUs[NVAPI_MAX_LOGICAL_GPUS];
@@ -110,7 +110,7 @@ u32 GetGpuNum() { return 1; }
 #endif
 } // namespace
 
-#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_OGL)
+#if !defined(USE_DX10) && !defined(USE_DX11)
 void CHWCaps::Update()
 {
     D3DCAPS9 caps;

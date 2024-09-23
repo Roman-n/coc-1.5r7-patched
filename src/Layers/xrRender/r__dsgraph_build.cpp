@@ -125,11 +125,7 @@ void D3DXRenderBase::r_dsgraph_insert_dynamic(dxRender_Visual* pVisual, Fvector&
         auto &pass = *sh->passes[iPass];
         auto &map = mapMatrixPasses[sh->flags.iPriority / 2][iPass];
 
-#ifdef USE_OGL
-        auto &Nvs = map[pass.vs->sh];
-        auto &Ngs = Nvs[pass.gs->sh];
-        auto &Nps = Ngs[pass.ps->sh];
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         auto &Nvs = map[&*pass.vs];
         auto &Ngs = Nvs[pass.gs->sh];
         auto &Nps = Ngs[pass.ps->sh];
@@ -169,7 +165,7 @@ void D3DXRenderBase::r_dsgraph_insert_dynamic(dxRender_Visual* pVisual, Fvector&
                     {
                         Nps.ssa = SSA;
 #endif
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
                         if (SSA > Ngs.ssa)
                         {
                             Ngs.ssa = SSA;
@@ -178,7 +174,7 @@ void D3DXRenderBase::r_dsgraph_insert_dynamic(dxRender_Visual* pVisual, Fvector&
                             {
                                 Nvs.ssa = SSA;
                             }
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
                         }
 #endif
                     }
@@ -272,11 +268,7 @@ void D3DXRenderBase::r_dsgraph_insert_static(dxRender_Visual* pVisual)
         auto &pass = *sh->passes[iPass];
         auto &map = mapNormalPasses[sh->flags.iPriority / 2][iPass];
 
-#ifdef USE_OGL
-        auto &Nvs = map[pass.vs->sh];
-        auto &Ngs = Nvs[pass.gs->sh];
-        auto &Nps = Ngs[pass.ps->sh];
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         auto &Nvs = map[&*pass.vs];
         auto &Ngs = Nvs[pass.gs->sh];
         auto &Nps = Ngs[pass.ps->sh];
@@ -316,7 +308,7 @@ void D3DXRenderBase::r_dsgraph_insert_static(dxRender_Visual* pVisual)
                     {
                         Nps.ssa = SSA;
 #endif
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
                         if (SSA > Ngs.ssa)
                         {
                             Ngs.ssa = SSA;
@@ -325,7 +317,7 @@ void D3DXRenderBase::r_dsgraph_insert_static(dxRender_Visual* pVisual)
                             {
                                 Nvs.ssa = SSA;
                             }
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
                         }
 #endif
                     }
@@ -757,36 +749,22 @@ D3DXRenderBase::D3DXRenderBase()
 void D3DXRenderBase::Copy(IRender& _in) { *this = *(D3DXRenderBase*)&_in; }
 void D3DXRenderBase::setGamma(float fGamma)
 {
-#ifndef USE_OGL
     m_Gamma.Gamma(fGamma);
-#else
-    UNUSED(fGamma);
-#endif
 }
 
 void D3DXRenderBase::setBrightness(float fGamma)
 {
-#ifndef USE_OGL
     m_Gamma.Brightness(fGamma);
-#else
-    UNUSED(fGamma);
-#endif
 }
 
 void D3DXRenderBase::setContrast(float fGamma)
 {
-#ifndef USE_OGL
     m_Gamma.Contrast(fGamma);
-#else
-    UNUSED(fGamma);
-#endif
 }
 
 void D3DXRenderBase::updateGamma()
 {
-#ifndef USE_OGL
     m_Gamma.Update();
-#endif
 }
 
 void D3DXRenderBase::OnDeviceDestroy(bool bKeepTextures)
@@ -806,7 +784,7 @@ void D3DXRenderBase::DestroyHW()
 
 void D3DXRenderBase::Reset(HWND hWnd, u32& dwWidth, u32& dwHeight, float& fWidth_2, float& fHeight_2)
 {
-#if defined(DEBUG) && !defined(USE_OGL)
+#if defined(DEBUG)
     _SHOW_REF("*ref -CRenderDevice::ResetTotal: DeviceREF:", HW.pDevice);
 #endif // DEBUG
 
@@ -814,10 +792,7 @@ void D3DXRenderBase::Reset(HWND hWnd, u32& dwWidth, u32& dwHeight, float& fWidth
     Memory.mem_compact();
     HW.Reset(hWnd);
 
-#if defined(USE_OGL)
-    dwWidth = psCurrentVidMode[0];
-    dwHeight = psCurrentVidMode[1];
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
     dwWidth = HW.m_ChainDesc.BufferDesc.Width;
     dwHeight = HW.m_ChainDesc.BufferDesc.Height;
 #else //    USE_DX10
@@ -829,7 +804,7 @@ void D3DXRenderBase::Reset(HWND hWnd, u32& dwWidth, u32& dwHeight, float& fWidth
     fHeight_2 = float(dwHeight / 2);
     Resources->reset_end();
 
-#if defined(DEBUG) && !defined(USE_OGL)
+#if defined(DEBUG)
     _SHOW_REF("*ref +CRenderDevice::ResetTotal: DeviceREF:", HW.pDevice);
 #endif
 }
@@ -837,7 +812,7 @@ void D3DXRenderBase::Reset(HWND hWnd, u32& dwWidth, u32& dwHeight, float& fWidth
 void D3DXRenderBase::SetupStates()
 {
     HW.Caps.Update();
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     SSManager.SetMaxAnisotropy(4);
 //  TODO: DX10: Implement Resetting of render states into default mode
 // VERIFY(!"D3DXRenderBase::SetupStates not implemented.");
@@ -888,9 +863,7 @@ void D3DXRenderBase::OnDeviceCreate(const char* shName)
 {
     // Signal everyone - device created
     RCache.OnDeviceCreate();
-#ifndef USE_OGL
     m_Gamma.Update();
-#endif
     Resources->OnDeviceCreate(shName);
     create();
 
@@ -902,10 +875,7 @@ void D3DXRenderBase::OnDeviceCreate(const char* shName)
 void D3DXRenderBase::Create(HWND hWnd, u32& dwWidth, u32& dwHeight, float& fWidth_2, float& fHeight_2, bool move_window)
 {
     HW.CreateDevice(hWnd, move_window);
-#if defined(USE_OGL)
-    dwWidth = psCurrentVidMode[0];
-    dwHeight = psCurrentVidMode[1];
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
     dwWidth = HW.m_ChainDesc.BufferDesc.Width;
     dwHeight = HW.m_ChainDesc.BufferDesc.Height;
 #else
@@ -926,7 +896,7 @@ void D3DXRenderBase::SetupGPU(bool bForceGPU_SW, bool bForceGPU_NonPure, bool bF
 
 void D3DXRenderBase::overdrawBegin()
 {
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     //  TODO: DX10: Implement overdrawBegin
     VERIFY(!"D3DXRenderBase::overdrawBegin not implemented.");
 #else
@@ -948,7 +918,7 @@ void D3DXRenderBase::overdrawBegin()
 
 void D3DXRenderBase::overdrawEnd()
 {
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     // TODO: DX10: Implement overdrawEnd
     VERIFY(!"D3DXRenderBase::overdrawBegin not implemented.");
 #else
@@ -993,7 +963,7 @@ void D3DXRenderBase::ResourcesDumpMemoryUsage() { Resources->_DumpMemoryUsage();
 DeviceState D3DXRenderBase::GetDeviceState()
 {
     HW.Validate();
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
 //  TODO: DX10: Implement GetDeviceState
 //  TODO: DX10: Implement DXGI_PRESENT_TEST testing
 // VERIFY(!"D3DXRenderBase::overdrawBegin not implemented.");
@@ -1016,7 +986,7 @@ bool D3DXRenderBase::GetForceGPU_REF() { return HW.Caps.bForceGPU_REF; }
 u32 D3DXRenderBase::GetCacheStatPolys() { return RCache.stat.polys; }
 void D3DXRenderBase::Begin()
 {
-#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_OGL)
+#if !defined(USE_DX10) && !defined(USE_DX11)
     CHK_DX(HW.pDevice->BeginScene());
 #endif
     RCache.OnFrameBegin();
@@ -1028,7 +998,7 @@ void D3DXRenderBase::Begin()
 
 void D3DXRenderBase::Clear()
 {
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D_CLEAR_DEPTH | D3D_CLEAR_STENCIL, 1.0f, 0);
     if (psDeviceFlags.test(rsClearBB))
     {
@@ -1050,7 +1020,7 @@ void D3DXRenderBase::End()
         overdrawEnd();
     RCache.OnFrameEnd();
     DoAsyncScreenshot();
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     bool bUseVSync = psDeviceFlags.is(rsFullscreen) && psDeviceFlags.test(rsVSync); //xxx: weird tearing glitches when VSync turned on for windowed mode in DX10\11
     HW.m_pSwapChain->Present(bUseVSync ? 1 : 0, 0);
 #else
@@ -1062,7 +1032,7 @@ void D3DXRenderBase::End()
 void D3DXRenderBase::ResourcesDestroyNecessaryTextures() { Resources->DestroyNecessaryTextures(); }
 void D3DXRenderBase::ClearTarget()
 {
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
 #else

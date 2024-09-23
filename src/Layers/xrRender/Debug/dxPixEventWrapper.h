@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(COC_DEBUG) && !defined(USE_OGL)
+#if defined(COC_DEBUG)
 
 class CScopedPixEvent
 {

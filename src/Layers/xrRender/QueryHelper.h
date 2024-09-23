@@ -3,58 +3,15 @@
 #pragma once
 
 //	Interface
-#ifdef USE_OGL
-IC HRESULT CreateQuery(GLuint* pQuery);
-IC HRESULT GetData(GLuint query, void* pData, UINT DataSize);
-IC HRESULT BeginQuery(GLuint query);
-IC HRESULT EndQuery(GLuint query);
-IC HRESULT ReleaseQuery(GLuint pQuery);
-#else
 IC HRESULT CreateQuery(ID3DQuery** ppQuery);
 IC HRESULT GetData(ID3DQuery* pQuery, void* pData, UINT DataSize);
 IC HRESULT BeginQuery(ID3DQuery* pQuery);
 IC HRESULT EndQuery(ID3DQuery* pQuery);
 IC HRESULT ReleaseQuery(ID3DQuery *pQuery);
-#endif
 
 //	Implementation
 
-#if defined(USE_OGL)
-
-IC HRESULT CreateQuery(GLuint* pQuery)
-{
-    glGenQueries(1, pQuery);
-    return S_OK;
-}
-
-IC HRESULT GetData(GLuint query, void* pData, UINT DataSize)
-{
-    if (DataSize == sizeof(GLint64))
-        CHK_GL(glGetQueryObjecti64v(query, GL_QUERY_RESULT, (GLint64*)pData));
-    else
-        CHK_GL(glGetQueryObjectiv(query, GL_QUERY_RESULT, (GLint*)pData));
-    return S_OK;
-}
-
-IC HRESULT BeginQuery(GLuint query)
-{
-    CHK_GL(glBeginQuery(GL_SAMPLES_PASSED, query));
-    return S_OK;
-}
-
-IC HRESULT EndQuery(GLuint query)
-{
-    CHK_GL(glEndQuery(GL_SAMPLES_PASSED));
-    return S_OK;
-}
-
-IC HRESULT ReleaseQuery(GLuint query)
-{
-    CHK_GL(glDeleteQueries(1, &query));
-    return S_OK;
-}
-
-#elif defined(USE_DX11)
+#if defined(USE_DX11)
 
 IC HRESULT CreateQuery(ID3DQuery** ppQuery)
 {

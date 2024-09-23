@@ -201,9 +201,7 @@ ENGINE_API int RunApplication()
     if (CheckBenchmark())
         return 0;
 
-    if (strstr(Core.Params, "-gl"))
-        Console->Execute("renderer renderer_gl");
-    else if (strstr(Core.Params, "-r4"))
+    if (strstr(Core.Params, "-r4"))
         Console->Execute("renderer renderer_r4");
     else if (strstr(Core.Params, "-r3"))
         Console->Execute("renderer renderer_r3");

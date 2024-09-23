@@ -116,12 +116,12 @@ void CDetail::Load(IReader* S)
         bv_bb.modify(vertices[i].P);
     bv_bb.getsphere(bv_sphere.P, bv_sphere.R);
 
-#if !defined(_EDITOR) && !defined(USE_OGL)
+#if !defined(_EDITOR)
     Optimize();
 #endif
 }
 
-#if !defined(_EDITOR) && !defined(USE_OGL)
+#if !defined(_EDITOR)
 #include "xrstripify.h"
 
 void CDetail::Optimize()

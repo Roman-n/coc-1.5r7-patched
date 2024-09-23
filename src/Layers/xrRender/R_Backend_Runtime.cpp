@@ -17,9 +17,7 @@ void CBackend::OnFrameEnd()
 {
     if (!GEnv.isDedicatedServer)
     {
-#ifdef USE_OGL
-        Invalidate();
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         HW.pContext->ClearState();
         Invalidate();
 #else // USE_DX10
@@ -147,7 +145,7 @@ void CBackend::Invalidate()
 void CBackend::set_ClipPlanes(u32 _enable, Fplane* _planes /*=NULL */, u32 count /* =0*/)
 {
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     // TODO: DX10: Implement in the corresponding vertex shaders
     // Use this to set up location, were shader setup code will get data
     // VERIFY(!"CBackend::set_ClipPlanes not implemented!");
@@ -194,7 +192,7 @@ void CBackend::set_ClipPlanes(u32 _enable, Fmatrix* _xform /*=NULL */, u32 fmask
         return;
     if (!_enable)
     {
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
 // TODO: DX10: Implement in the corresponding vertex shaders
 // Use this to set up location, were shader setup code will get data
 // VERIFY(!"CBackend::set_ClipPlanes not implemented!");
@@ -388,11 +386,7 @@ void CBackend::set_Textures(STextureList* _T)
             continue;
 
         textures_ps[_last_ps] = nullptr;
-#if defined(USE_OGL)
-        CHK_GL(glActiveTexture(GL_TEXTURE0 + _last_ps));
-        CHK_GL(glBindTexture(GL_TEXTURE_2D, 0));
-        CHK_GL(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         // TODO: DX10: Optimise: set all resources at once
         ID3DShaderResourceView* pRes = 0;
         // HW.pDevice->PSSetShaderResources(_last_ps, 1, &pRes);
@@ -408,11 +402,7 @@ void CBackend::set_Textures(STextureList* _T)
             continue;
 
         textures_vs[_last_vs] = nullptr;
-#if defined(USE_OGL)
-        CHK_GL(glActiveTexture(GL_TEXTURE0 + CTexture::rstVertex + _last_vs));
-        CHK_GL(glBindTexture(GL_TEXTURE_2D, 0));
-        CHK_GL(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         // TODO: DX10: Optimise: set all resources at once
         ID3DShaderResourceView* pRes = 0;
         // HW.pDevice->VSSetShaderResources(_last_vs, 1, &pRes);

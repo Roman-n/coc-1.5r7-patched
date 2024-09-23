@@ -464,9 +464,7 @@ void xrSASH::TryInitEngine(bool bNoRun)
         xr_strcpy(Console->ConfigFile, c_name);
     }
 
-    if (strstr(Core.Params, "-gl"))
-        Console->Execute("renderer renderer_gl");
-    else if (strstr(Core.Params, "-r4"))
+    if (strstr(Core.Params, "-r4"))
         Console->Execute("renderer renderer_r4");
     else if (strstr(Core.Params, "-r3"))
         Console->Execute("renderer renderer_r3");

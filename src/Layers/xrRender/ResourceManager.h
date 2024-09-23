@@ -38,11 +38,11 @@ public:
     //	DX10 cut DEFINE_MAP_PRED(const char*,CRTC*,			map_RTC,		map_RTCIt,			str_pred);
     using map_VS = xr_map<const char*, SVS*, str_pred>;
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     using map_GS = xr_map<const char*, SGS*, str_pred>;
 #endif
 
-#if defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX11)
     using map_HS = xr_map<const char*, SHS*, str_pred>;
     using map_DS = xr_map<const char*, SDS*, str_pred>;
     using map_CS = xr_map<const char*, SCS*, str_pred>;
@@ -62,11 +62,11 @@ private:
     map_VS m_vs;
     map_PS m_ps;
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     map_GS m_gs;
 #endif
 
-#if defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX11)
     map_DS m_ds;
     map_HS m_hs;
     map_CS m_cs;
@@ -159,12 +159,12 @@ public:
 
 //	DX10 cut CRTC*							_CreateRTC			(LPCSTR Name, u32 size,	D3DFORMAT f);
 //	DX10 cut void							_DeleteRTC			(const CRTC*	RT	);
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     SGS* _CreateGS(LPCSTR Name);
     void _DeleteGS(const SGS* GS);
 #endif //	USE_DX10
 
-#if defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX11)
     SHS* _CreateHS(LPCSTR Name);
     void _DeleteHS(const SHS* HS);
 
@@ -187,10 +187,6 @@ public:
     // Shader compiling / optimizing
     SState* _CreateState(SimulatorStates& Code);
     void _DeleteState(const SState* SB);
-
-#ifdef USE_OGL
-    SDeclaration* _CreateDecl (u32 FVF);
-#endif
 
     SDeclaration* _CreateDecl(D3DVERTEXELEMENT9* dcl);
     void _DeleteDecl(const SDeclaration* dcl);
@@ -233,13 +229,8 @@ public:
         v_constant_setup.push_back(std::make_pair(shared_str(name), s));
     }
 
-#ifdef USE_OGL
-    SGeometry* CreateGeom(D3DVERTEXELEMENT9* decl, GLuint vb, GLuint ib);
-    SGeometry* CreateGeom(u32 FVF, GLuint vb, GLuint ib);
-#else
     SGeometry* CreateGeom(D3DVERTEXELEMENT9* decl, ID3DVertexBuffer* vb, ID3DIndexBuffer* ib);
     SGeometry* CreateGeom(u32 FVF, ID3DVertexBuffer* vb, ID3DIndexBuffer* ib);
-#endif
 
     void DeleteGeom(const SGeometry* VS);
     void DeferredLoad(BOOL E) { bDeferredLoad = E; }

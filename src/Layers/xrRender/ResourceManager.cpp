@@ -1,4 +1,4 @@
-// TextureManager.cpp: implementation of the CResourceManager class.
+﻿// TextureManager.cpp: implementation of the CResourceManager class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -347,12 +347,9 @@ void CResourceManager::DeferredUpload()
     if (!RDEVICE.b_is_Ready)
         return;
 
-#ifndef USE_OGL
     tbb::parallel_for_each(m_textures, [&](auto m_tex) { m_tex.second->Load(); });
-#else
     for (auto& texture : m_textures)
         texture.second->Load();
-#endif
 }
 /*
 void	CResourceManager::DeferredUnload	()
@@ -436,7 +433,7 @@ void CResourceManager::_DumpMemoryUsage()
 void CResourceManager::Evict()
 {
 //	TODO: DX10: check if we really need this method
-#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_OGL)
+#if !defined(USE_DX10) && !defined(USE_DX11)
     CHK_DX(HW.pDevice->EvictManagedResources());
 #endif
 }

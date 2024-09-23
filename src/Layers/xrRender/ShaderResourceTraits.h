@@ -10,11 +10,7 @@ struct ShaderTypeTraits<SVS>
 {
     typedef CResourceManager::map_VS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3DVertexShader*;
-#endif
 
     static inline const char* GetShaderExt() { return ".vs"; }
     static inline const char* GetCompilationTarget()
@@ -44,9 +40,7 @@ struct ShaderTypeTraits<SVS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_VERTEX_SHADER);
-#elif USE_DX11
+#ifdef USE_DX11
         _res = HW.pDevice->CreateVertexShader(buffer, size, 0, &sh);
 #elif defined(USE_DX10)
         _res = HW.pDevice->CreateVertexShader(buffer, size, &sh);
@@ -64,11 +58,7 @@ struct ShaderTypeTraits<SPS>
 {
     typedef CResourceManager::map_PS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3DPixelShader*;
-#endif
 
     static inline const char* GetShaderExt() { return ".ps"; }
     static inline const char* GetCompilationTarget()
@@ -114,9 +104,7 @@ struct ShaderTypeTraits<SPS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_FRAGMENT_SHADER);
-#elif USE_DX11
+#ifdef USE_DX11
         _res = HW.pDevice->CreatePixelShader(buffer, size, 0, &sh);
 #elif defined(USE_DX10)
         _res = HW.pDevice->CreatePixelShader(buffer, size, &sh);
@@ -129,18 +117,13 @@ struct ShaderTypeTraits<SPS>
     static inline u32 GetShaderDest() { return RC_dest_pixel; }
 };
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
 template <>
 struct ShaderTypeTraits<SGS>
 {
     typedef CResourceManager::map_GS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3DGeometryShader*;
-#endif
-
 
     static inline const char* GetShaderExt() { return ".gs"; }
     static inline const char* GetCompilationTarget() { return "gs_4_0"; }
@@ -154,9 +137,7 @@ struct ShaderTypeTraits<SGS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_GEOMETRY_SHADER);
-#elif USE_DX11
+#ifdef USE_DX11
         _res = HW.pDevice->CreateGeometryShader(buffer, size, 0, &sh);
 #else
         _res = HW.pDevice->CreateGeometryShader(buffer, size, &sh);
@@ -168,17 +149,13 @@ struct ShaderTypeTraits<SGS>
 };
 #endif
 
-#if defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX11)
 template <>
 struct ShaderTypeTraits<SHS>
 {
     typedef CResourceManager::map_HS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3D11HullShader*;
-#endif
 
     static inline const char* GetShaderExt() { return ".hs"; }
     static inline const char* GetCompilationTarget() { return "hs_5_0"; }
@@ -192,11 +169,7 @@ struct ShaderTypeTraits<SHS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_TESS_CONTROL_SHADER);
-#else
         _res = HW.pDevice->CreateHullShader(buffer, size, NULL, &sh);
-#endif
         return _res;
     }
 
@@ -208,11 +181,7 @@ struct ShaderTypeTraits<SDS>
 {
     typedef CResourceManager::map_DS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3D11DomainShader*;
-#endif
 
     static inline const char* GetShaderExt() { return ".ds"; }
     static inline const char* GetCompilationTarget() { return "ds_5_0"; }
@@ -226,11 +195,7 @@ struct ShaderTypeTraits<SDS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_TESS_EVALUATION_SHADER);
-#else
         _res = HW.pDevice->CreateDomainShader(buffer, size, NULL, &sh);
-#endif
         return _res;
     }
 
@@ -242,11 +207,7 @@ struct ShaderTypeTraits<SCS>
 {
     typedef CResourceManager::map_CS MapType;
 
-#ifdef USE_OGL
-    using HWShaderType = GLuint;
-#else
     using HWShaderType = ID3D11ComputeShader*;
-#endif
 
     static inline const char* GetShaderExt() { return ".cs"; }
     static inline const char* GetCompilationTarget() { return "cs_5_0"; }
@@ -260,11 +221,7 @@ struct ShaderTypeTraits<SCS>
     static inline HRESULT CreateHWShader(DWORD const* buffer, size_t size, HWShaderType& sh)
     {
         HRESULT _res = 0;
-#ifdef USE_OGL
-        sh = glCreateShader(GL_COMPUTE_SHADER);
-#else
         _res = HW.pDevice->CreateComputeShader(buffer, size, NULL, &sh);
-#endif
         return _res;
     }
 
@@ -284,7 +241,7 @@ inline CResourceManager::map_VS& CResourceManager::GetShaderMap()
     return m_vs;
 }
 
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
 template <>
 inline CResourceManager::map_GS& CResourceManager::GetShaderMap()
 {
@@ -292,7 +249,7 @@ inline CResourceManager::map_GS& CResourceManager::GetShaderMap()
 }
 #endif
 
-#if defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX11)
 template <>
 inline CResourceManager::map_DS& CResourceManager::GetShaderMap()
 {
@@ -379,9 +336,7 @@ inline T* CResourceManager::CreateShader(const char* name, const char* filename 
         if (searchForEntryAndTarget)
             ShaderTypeTraits<T>::GetCompilationTarget(c_target, c_entry, data);
 
-#ifdef USE_OGL
-        DWORD flags = NULL;
-#elif defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11)
         DWORD flags = D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
 #else
         DWORD flags = D3DXSHADER_DEBUG | D3DXSHADER_PACKMATRIX_ROWMAJOR;

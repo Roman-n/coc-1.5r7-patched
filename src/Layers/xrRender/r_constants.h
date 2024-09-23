@@ -72,22 +72,11 @@ struct ECORE_API R_constant_load
     u16 index; // linear index (pixel)
     u16 cls; // element class
 
-#ifdef USE_OGL
-    GLuint location;
-    GLuint program;
-
-    R_constant_load() : index(u16(-1)), cls(u16(-1)), location(0), program(0) {};
-#else
     R_constant_load() : index(u16(-1)), cls(u16(-1)) {};
-#endif // USE_OGL
 
     BOOL equal(R_constant_load& C)
     {
-#ifdef USE_OGL
-        return (index == C.index) && (cls == C.cls) && (location == C.location) && (program == C.program);
-#else
         return (index == C.index) && (cls == C.cls);
-#endif // USE_OGL
     }
 };
 
@@ -99,7 +88,7 @@ struct ECORE_API R_constant : public xr_resource
 
     R_constant_load ps;
     R_constant_load vs;
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     R_constant_load gs;
 #ifdef USE_DX11
     R_constant_load hs;
@@ -119,7 +108,7 @@ struct ECORE_API R_constant : public xr_resource
         {
         case RC_dest_vertex: return vs;
         case RC_dest_pixel: return ps;
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
         case RC_dest_geometry: return gs;
 #ifdef USE_DX11
         case RC_dest_hull: return hs;

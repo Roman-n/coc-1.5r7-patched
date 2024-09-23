@@ -10,7 +10,7 @@ class CTheoraSurface;
 class ECORE_API CTexture : public xr_resource_named
 {
 public:
-#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
+#if defined(USE_DX10) || defined(USE_DX11)
     enum	MaxTextures
     {
         //	Actually these values are 128
@@ -43,16 +43,6 @@ public:
     };
 #endif	//	USE_DX10
 
-#ifdef USE_OGL
-    //	Since OGL doesn't differentiate between stages,
-    //	distance between enum values should be the max for that stage.
-    enum ResourceShaderType
-    {
-        rstPixel = 0,	//	Default texture offset
-        rstVertex = rstPixel + mtMaxPixelShaderTextures,
-        rstGeometry = rstVertex + mtMaxVertexShaderTextures,
-    };
-#else
     //	Since DX10 allows up to 128 unique textures,
     //	distance between enum values should be at leas 128
     enum ResourceShaderType //	Don't change this since it's hardware-dependent
@@ -66,7 +56,6 @@ public:
         rstCompute = rstDomain + 256,
         rstInvalid = rstCompute + 256
     };
-#endif // USE_OGL
 
 public:
     void __stdcall apply_load(u32 stage);
@@ -81,14 +70,8 @@ public:
     void Unload(void);
     // void Apply(u32 dwStage);
 
-#ifdef USE_OGL
-    void surface_set(GLenum target, GLuint surf);
-    GLuint surface_get();
-#else
     void surface_set(ID3DBaseTexture* surf);
     ID3DBaseTexture* surface_get();
-#endif // USE_OGL
-
 
     BOOL isUser() { return flags.bUser; }
 
@@ -160,17 +143,6 @@ public: //	Public class members (must be encapsulated further)
     };
 
 private:
-#ifdef USE_OGL
-    GLuint pSurface;
-    GLuint pBuffer;
-    // Sequence data
-    xr_vector<GLuint> seqDATA;
-    // Description
-    GLint m_width;
-    GLint m_height;
-    GLuint desc_cache;
-    GLenum desc;
-#else
     ID3DBaseTexture* pSurface;
     // Sequence data
     xr_vector<ID3DBaseTexture*> seqDATA;
@@ -180,7 +152,6 @@ private:
     u32 m_height;
     ID3DBaseTexture* desc_cache;
     D3D_TEXTURE2D_DESC desc;
-#endif // USE_OGL
 
 #if defined(USE_DX10) || defined(USE_DX11)
     ID3DShaderResourceView* m_pSRView;
